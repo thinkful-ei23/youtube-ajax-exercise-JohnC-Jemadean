@@ -229,7 +229,7 @@ const fetchVideos = function(searchTerm, callback) {
 const decorateResponse = function(response) {
   return response.items.map(result => 
   {return {
-    id: result.id,
+    id: result.id.videoId,
     title: result.snippet.title,
     thumbnail: result.snippet.thumbnails.default.url,
   };
@@ -244,7 +244,11 @@ const decorateResponse = function(response) {
 // 2. Using the object, return an HTML string containing all the expected data
 // TEST IT!
 const generateVideoItemHtml = function(video) {
-  return JSON.stringify(video);
+  return `
+  <li id="${video.id}">
+  <h3>${video.title}</h3>
+  <img src="${video.thumbnail}">
+  </li>`;
 };
 
 
@@ -256,7 +260,6 @@ const addVideosToStore = function(videos) {
   store.videos = videos;
 };
 
-addVideosToStore(decorateResponse(mockdata));
 
 // TASK:
 // 1. Create a `render` function
@@ -265,14 +268,10 @@ addVideosToStore(decorateResponse(mockdata));
 // TEST IT!
 const render = function() {
   const rendervideos = store.videos.map(video => generateVideoItemHtml(video));
-  $('.results').html(`<li id = ${rendervideos.id}>
-  <h3>${rendervideos.title}</h3>
-  <img src = "${rendervideos.thumbnail}">            
-  </li>`);
+  $('.results').html(rendervideos);
   console.log(rendervideos);
 };
 
-render();
 // TASK:
 // 1. Create a `handleFormSubmit` function that adds an event listener to the form
 // 2. The listener should:
@@ -285,11 +284,21 @@ render();
 //   g) Inside the callback, run the `render` function 
 // TEST IT!
 const handleFormSubmit = function() {
-
+  $('form').submit(event => {
+    event.preventDefault();
+    const querytarget = $(event.currentTarget).find('#search-term');
+    const query = querytarget.val();
+    querytarget.val('');
+    fetchVideos(query, response => {
+      addVideosToStore(decorateResponse(response));
+      render();
+    })
+  })
 };
 
 // When DOM is ready:
 $(function () {
+  handleFormSubmit();
   // TASK:
   // 1. Run `handleFormSubmit` to bind the event listener to the DOM
 });
