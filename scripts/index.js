@@ -253,7 +253,7 @@ const generateVideoItemHtml = function(video) {
 // objects and sets the array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-  store.video = videos
+  store.videos = videos;
 };
 
 addVideosToStore(decorateResponse(mockdata));
@@ -265,7 +265,11 @@ addVideosToStore(decorateResponse(mockdata));
 // TEST IT!
 const render = function() {
   const rendervideos = store.videos.map(video => generateVideoItemHtml(video));
-  $('.results').html(rendervideos);
+  $('.results').html(`<li id = ${rendervideos.id}>
+  <h3>${rendervideos.title}</h3>
+  <img src = "${rendervideos.thumbnail}">            
+  </li>`);
+  console.log(rendervideos);
 };
 
 render();
