@@ -247,15 +247,16 @@ const generateVideoItemHtml = function(video) {
   return JSON.stringify(video);
 };
 
-console.log(generateVideoItemHtml(mockdata));
 
 // TASK:
 // 1. Create a `addVideosToStore` function that receives an array of decorated video 
 // objects and sets the array as the value held in store.videos
 // TEST IT!
 const addVideosToStore = function(videos) {
-
+  store.video = videos
 };
+
+addVideosToStore(decorateResponse(mockdata));
 
 // TASK:
 // 1. Create a `render` function
@@ -263,9 +264,11 @@ const addVideosToStore = function(videos) {
 // 3. Add your array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function() {
-
+  const rendervideos = store.videos.map(video => generateVideoItemHtml(video));
+  $('.results').html(rendervideos);
 };
 
+render();
 // TASK:
 // 1. Create a `handleFormSubmit` function that adds an event listener to the form
 // 2. The listener should:
